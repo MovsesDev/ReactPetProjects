@@ -36,8 +36,8 @@ function App() {
   const [currentBoard, setCurrentBoard] = useState(null);
   const [currentItem, setCurrentItem] = useState(null);
 
-  const dragStartHandler = (e, board, item) => {
-    setCurrentBoard(board);
+  const dragStartHandler = (e, b, item) => {
+    setCurrentBoard(b);
     setCurrentItem(item);
   };
   const dragLeaveHandler = (e) => {
@@ -53,40 +53,41 @@ function App() {
       e.target.style.boxShadow = "0 4px 3px gray";
     }
   };
-  const dropHandler = (e, board, item) => {
+  const dropHandler = (e, b, item) => {
     e.preventDefault();
     const currentIndex = currentBoard.items.indexOf(currentItem);
     currentBoard.items.splice(currentIndex, 1);
-    const dropIndex = board.items.indexOf(item);
-    board.items.splice(dropIndex + 1, 0, currentItem);
-
+    const dropIndex = b.items.indexOf(item);
+    b.items.splice(dropIndex + 1, 0, currentItem);
+    
     setBoard(
-      board.map((b) => {
-        if (b.id === board.id) {
-          return board;
+      board.map((bo) => {
+        if (bo.id === b.id) {
+          return bo;
         }
-        if (b.id === currentBoard.id) {
+        if (bo.id === currentBoard.id) {
           return currentBoard;
         }
-        return b;
+        return bo;
       })
-    );
+      );
+      e.target.style.boxShadow = "none";
   };
 
   return (
     <div className="App">
-      {board.map((board) => (
-        <div key={board.id} className="board">
-          <div> {board.title} </div>
-          {board.items.map((item) => (
+      {board.map((b) => (
+        <div key={b.id} className="board">
+          <div> {b.title} </div>
+          {b.items.map((item) => (
             <div
               className="item"
               key={item.id}
-              onDragStart={(e) => dragStartHandler(e, board, item)}
-              onDragLeave={(e) => dragLeaveHandler(e)}
-              onDragEnd={(e) => dragEndHandler(e)}
               onDragOver={(e) => dragOverHandler(e)}
-              onDrop={(e) => dropHandler(e, board, item)}
+              onDragLeave={(e) => dragLeaveHandler(e)}
+              onDragStart={(e) => dragStartHandler(e, b, item)}
+              onDragEnd={(e) => dragEndHandler(e)}
+              onDrop={(e) => dropHandler(e, b, item)}
               draggable={true}
             >
               {item.text}
