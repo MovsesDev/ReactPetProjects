@@ -1,4 +1,0 @@
-{
-    "port" : 5000,
-    "mongoUrl" : "mongodb+srv://Movses:1234qwer@cluster0.vem50.mongodb.net/?retryWrites=true&w=majority"
-}
