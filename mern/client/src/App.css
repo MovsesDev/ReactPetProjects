@@ -1,0 +1,9 @@
+.App {
+    height: 100vh;
+    background-color: #383fc1;
+}
+
+.main {
+    display: flex;
+    justify-content: space-between;
+}
