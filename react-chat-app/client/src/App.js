@@ -18,10 +18,10 @@ function App() {
         <NavLink to='/'>Login</NavLink>
       </nav>
 
-<Users/>
+
 
       <section className="content">
-        {!showChat ? (<Login setShowChat={setShowChat} />) : (<Chat />)}
+        {!showChat ? (<Login setShowChat={setShowChat} />) : (<div> <Users className='users'/>  <Chat /> </div>)}
       </section>
     </div>
   );
