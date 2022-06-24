@@ -1,0 +1,33 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+body {
+    font-size: 20px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+button {
+    box-shadow: 0px 2px 5px;
+    margin: 0.5px;
+    font-size: 25px;
+    cursor: pointer;
+    height: 70px;
+}
+
+button:hover {
+    background-color: rgb(184, 183, 183); 
+    transition: .5s ease;
+}
+
+input {
+    background-color: rgb(180, 176, 176);
+    padding: 13px;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
