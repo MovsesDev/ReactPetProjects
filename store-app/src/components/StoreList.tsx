@@ -11,12 +11,12 @@ const StoreList = (props: Props) => {
 
     const [store, setStore] = useState<Post[]>([])
     const [from, setFrom] = useState<number>(0)
-    const [to, setTo] = useState<number>(4)
+    const [to, setTo] = useState<number>(10)
 
     useEffect(() => {
         const fetchStore = async () => {
             try {
-                const response = await axios.get('https://api.thecatapi.com/v1/images/search?limit=40&page=1&category_ids=1')
+                const response = await axios.get('https://api.thecatapi.com/v1/images/search?limit=100&page=1&category_ids=1')
                 setStore(prev =>  [...prev, ...response.data])
                 return response.data
 
@@ -29,13 +29,13 @@ const StoreList = (props: Props) => {
     }, [])
 
     const goForward = () => {
-        setFrom(prev => prev + 4)
-        setTo(prev => prev + 4)
+        setFrom(prev => prev + 10)
+        setTo(prev => prev + 10)
     }
 
     const goBack = () => {
-        setFrom(prev => prev - 4)
-        setTo(prev => prev - 4)
+        setFrom(prev => prev - 10)
+        setTo(prev => prev - 10)
     }
     console.log(store.length);
     
