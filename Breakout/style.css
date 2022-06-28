@@ -1,0 +1,37 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.user {
+    position: absolute;
+    width: 100px;
+    height: 20px;
+    background-color: blueviolet;
+  }
+
+.board {
+    position: relative;
+    width: 900px;
+    height: 600px;
+    border: 1px solid black;
+}
+
+
+.block {
+    position: absolute;
+    width: 100px;
+    height: 20px;
+    background-color: blue;
+  }
+  
+  .ball {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    background-color: red;
+  }
