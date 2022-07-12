@@ -7,17 +7,26 @@ import { Link } from 'react-router-dom';
 import { getPosts } from '../actions/posts';
 import useStyles from './styles';
 
+let d = null
+
 const Paginate = ({ page }) => {
   const { numberOfPages } = useSelector((state) => state.posts);
   const dispatch = useDispatch();
-
   const classes = useStyles();
-
+  const b = {}
   useEffect(() => {
+    console.log(d === dispatch);
     if (page) {
       dispatch(getPosts(page));
     }
   }, [dispatch, page]);
+  
+  
+
+
+useEffect(() => {
+  d = dispatch
+}, [])
 
   return (
     <Pagination
