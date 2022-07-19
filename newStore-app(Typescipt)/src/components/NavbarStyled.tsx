@@ -23,8 +23,8 @@ export const NavItem = styled(NavLink)`
   padding: 0 10px;
 `;
 
-export const IconWrap = styled.div`
-display: flex;
+export const IconWrap = styled.div<{cartQuantity: Number}>`
+display: ${props => props.cartQuantity ? 'flex' : 'none'};
 align-items: center;
 justify-content: center;
 position: relative;
@@ -40,11 +40,14 @@ export const Circle = styled.div`
 display: flex;
 justify-content: center;
 align-items: center;
-width: 15px;
-height: 15px;
+width: 18px;
+height: 18px;
+color: white;
   position: absolute;
   bottom: 0;
   right: 0;
+  text-align: center;
+  font-size: 13px;
   background-color: red;
   transform: translate(15%, 15%);
   border-radius: 50%;

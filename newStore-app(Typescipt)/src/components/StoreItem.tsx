@@ -1,0 +1,54 @@
+import React, { useState } from "react";
+import { useShoppingCart } from "../context/ShoppingCartContext";
+import * as s from "./StoreItemStyled";
+
+interface StoreItemProps {
+  item: {
+    id: number;
+    name: string;
+    price: number;
+    imgUrl: string;
+  };
+}
+
+const StoreItem: React.FC<StoreItemProps> = ({ item }) => {
+  const {
+    getItemQuantity,
+    increaseCartQuantity,
+    decreaseCartQuantity,
+    removeFromCart,
+  } = useShoppingCart();
+  const quantity = getItemQuantity(item.id);
+  return (
+    <s.Card>
+      <s.Image src={item.imgUrl} />
+      <s.ImageTop>
+        <s.ImageName>{item.name}</s.ImageName>
+        <s.ImagePrice>${item.price}</s.ImagePrice>
+      </s.ImageTop>
+      {quantity !== 0 ? (
+        <s.ImageMid>
+            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+          <s.Button onClick={() => decreaseCartQuantity(item.id)}>-</s.Button>
+          <s.Text>{quantity} in cart</s.Text>
+          <s.Button onClick={() => increaseCartQuantity(item.id)}>+</s.Button>
+            </div>
+          <div style={{padding: '10px'}}>
+
+          <s.RemoveButton onClick={() => removeFromCart(item.id)}>
+            Remove Cart
+          </s.RemoveButton>
+          </div>
+        </s.ImageMid>
+      ) : (
+        <s.ImageBottom>
+          <s.AddButton onClick={() => increaseCartQuantity(item.id)}>
+            + Add to Cart
+          </s.AddButton>
+        </s.ImageBottom>
+      )}
+    </s.Card>
+  );
+};
+
+export default StoreItem;

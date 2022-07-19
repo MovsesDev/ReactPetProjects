@@ -1,7 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
+import { useShoppingCart } from "../context/ShoppingCartContext";
+import Basket from "./Basket";
 import { Container } from "./Container";
 import { Circle, Icon, IconWrap, Nav, NavbarS, NavBody, NavItem } from "./NavbarStyled";
 const Navbar = () => {
+
+const {cartQuantity, setBasketOpen} = useShoppingCart()
+
   return (
     <NavbarS>
       <Container>
@@ -11,8 +16,9 @@ const Navbar = () => {
             <NavItem to="/store">Store</NavItem>
             <NavItem to="/about">About</NavItem>
           </Nav>
-          <IconWrap>
-            <Icon
+
+          <IconWrap onClick={() => setBasketOpen(true)} cartQuantity={cartQuantity}>
+            <Icon 
               xmlns="http://www.w3.org/2000/svg"
               version="1.1"
               width="256"
@@ -45,10 +51,11 @@ const Navbar = () => {
                 </g>
               </g>
             </Icon>
-            <Circle>4</Circle>
+            <Circle>{cartQuantity}</Circle>
                     </IconWrap>
         </NavBody>
       </Container>
+        
     </NavbarS>
   );
 };
