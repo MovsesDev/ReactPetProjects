@@ -52,3 +52,34 @@ color: white;
   transform: translate(15%, 15%);
   border-radius: 50%;
 `;
+
+export const LoginButton = styled.button`
+  border: 0;
+  background: none;
+  color: black;
+  padding: 4px 8px;
+  margin-left: 15px;
+  font-size: 20px;
+  cursor: pointer;    
+`
+export const SignUpButton = styled.button`
+  border: 0;
+  background: none;
+  background-color: #1f39cc;
+  color: white;
+  background-color: black;
+  padding: 8px 16px;
+  border-radius: 5px;
+  margin-left: 15px;
+  font-size: 20px;
+  cursor: pointer;    
+  transition: 0.25s ease;
+    &:hover,
+&:focus {
+  box-shadow: 0 0.2rem 0.2rem -0.2rem var(--hover);
+  transform: translateY(-0.12rem);
+}
+
+  
+
+`

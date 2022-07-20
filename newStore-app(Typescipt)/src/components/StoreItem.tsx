@@ -1,17 +1,11 @@
 import React, { useState } from "react";
 import { useShoppingCart } from "../context/ShoppingCartContext";
+import { Item } from "../types/cartItem";
 import * as s from "./StoreItemStyled";
 
-interface StoreItemProps {
-  item: {
-    id: number;
-    name: string;
-    price: number;
-    imgUrl: string;
-  };
-}
 
-const StoreItem: React.FC<StoreItemProps> = ({ item }) => {
+
+const StoreItem = ({item}: { item : {id: string, name: string, price: number, imgUrl: {url: string}}}) => {
   const {
     getItemQuantity,
     increaseCartQuantity,
@@ -21,7 +15,7 @@ const StoreItem: React.FC<StoreItemProps> = ({ item }) => {
   const quantity = getItemQuantity(item.id);
   return (
     <s.Card>
-      <s.Image src={item.imgUrl} />
+      <s.Image src={item.imgUrl.url} />
       <s.ImageTop>
         <s.ImageName>{item.name}</s.ImageName>
         <s.ImagePrice>${item.price}</s.ImagePrice>
