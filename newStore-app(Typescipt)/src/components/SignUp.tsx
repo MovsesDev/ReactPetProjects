@@ -1,59 +1,102 @@
-import React, { Dispatch, RefObject, SetStateAction, useRef } from "react";
-import styled from "styled-components";
+import { useMutation } from "@apollo/client";
+import React, {
+  Dispatch,
+  RefObject,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { useNavigate } from "react-router-dom";
+import { CREATE_AUTHOR, PUBLISH_AUTHOR } from "../apollo/carts";
+import { useShoppingCart } from "../context/ShoppingCartContext";
 import useOnClickOutside from "../hooks/outsikdeClick";
+import { Author } from "../types/cartItem";
+import { Form, Input, LoginBtn } from "./SignUpStyled";
 
 interface SignUpProps {
-  setLocation: Dispatch<SetStateAction<boolean>>,
-  setIsOpen: Dispatch<SetStateAction<boolean>>,
+  setLocation: Dispatch<SetStateAction<boolean>>;
+  setIsOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-const SignUp: React.FC<SignUpProps> = ({ setLocation, setIsOpen}) => {
+const SignUp: React.FC<SignUpProps> = ({ setLocation, setIsOpen }) => {
+  const navigate = useNavigate();
+  const { setIsAuth } = useShoppingCart();
+  const [createAuthor, { error, loading, data }] =
+    useMutation<Author>(CREATE_AUTHOR);
+
+  if (error) console.log(error);
+  const [
+    publishAuthor,
+    { error: publishError, loading: publishLoading, data: publishData },
+  ] = useMutation<Author>(PUBLISH_AUTHOR);
+
+  if (publishError) console.log(publishError);
+  const handleSignUp = (e: React.FormEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+
+    createAuthor({
+      variables: {
+        email,
+        password,
+      },
+    });
+  };
+
+  if (data?.createAuthor.id) {
+    publishAuthor({
+      variables: {
+        id: data?.createAuthor.id,
+      },
+    });
+    data.createAuthor.id = "";
+  }
+
+  useEffect(() => {
+    if (data?.createAuthor.email) {
+      navigate("/");
+      setIsOpen(false);
+      localStorage.setItem("user", data.createAuthor.email);
+      setIsAuth(true);
+    }
+  }, [data?.createAuthor.email]);
+
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   const squareBoxRef = useRef<HTMLFormElement>(null);
-  useOnClickOutside(squareBoxRef,() => setIsOpen(false));
+  useOnClickOutside(squareBoxRef, () => setIsOpen(false));
+
   return (
     <Form ref={squareBoxRef}>
       Sign up
-      <Input placeholder="Email"></Input>
-      <Input placeholder="Password"></Input>
-      <LoginBtn>Sign up</LoginBtn>
-      <p>Already have an account? <button style={{background: 'none', border: 'none', cursor: 'pointer', fontSize: '17px'}} onClick={() => setLocation(true)}>Sign in</button></p>
+      <Input
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        placeholder="Email"
+      ></Input>
+      <Input
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        placeholder="Password"
+      ></Input>
+      <LoginBtn onClick={handleSignUp}>Sign up</LoginBtn>
+      <p>
+        Already have an account?{" "}
+        <button
+          style={{
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            fontSize: "17px",
+          }}
+          onClick={() => setLocation(true)}
+        >
+          Sign in
+        </button>
+      </p>
     </Form>
   );
 };
 
 export default SignUp;
-
-const Form = styled.form`
-  padding: 50px 25px;
-  width: 20vw;
-  background-color: white;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-border-radius: 5px; 
-`;
-
-const Input = styled.input`
-  width: 80%;
-  padding: 8px 4px;
-  margin: 5px;
-  border: 2px solid black;
-  border-radius: 5px;
-  outline: none;
-  &:focus {
-    border-color: #2e7dd1;
-  }
-`;
-
-const LoginBtn = styled.button `
-    background: none;
-    border: 0;
-    color: white;
-    background: black;
-    padding: 8px 0;
-    width: 80%;
-    border-radius: 5px;
-    margin: 15px;
-    cursor: pointer;
-`

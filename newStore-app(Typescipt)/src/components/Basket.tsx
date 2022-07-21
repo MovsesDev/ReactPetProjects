@@ -3,7 +3,7 @@ import * as s from "./BasketStyled";
 import { useShoppingCart } from "../context/ShoppingCartContext";
 import CartItem from "./CartItem";
 import { useQuery } from "@apollo/client";
-import { Item } from "../types/cartItem";
+import { ItemList } from "../types/cartItem";
 import { ALL_CARTS } from "../apollo/carts";
 
 interface BasketProps {
@@ -13,11 +13,9 @@ interface BasketProps {
 
 const Basket: React.FC<BasketProps> = ({ active, setActive }) => {
   const { cartItems } = useShoppingCart();
-  const { error, loading, data } = useQuery<Item>(ALL_CARTS);
+  const { error, loading, data } = useQuery<ItemList>(ALL_CARTS);
   if (error) return <div>Error</div>;
   if (!data) return <div>no data</div>;
-
-  console.log(data);
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
     setActive(false);

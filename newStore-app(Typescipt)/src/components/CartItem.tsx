@@ -2,7 +2,7 @@ import { useQuery } from "@apollo/client";
 import React from "react";
 import { useShoppingCart } from "../context/ShoppingCartContext";
 import { ALL_CARTS } from "../apollo/carts";
-import { Item } from "../types/cartItem";
+import { ItemList } from "../types/cartItem";
 import * as s from "./CartItemStyled";
 interface CartItemProps {
   item: {
@@ -12,7 +12,7 @@ interface CartItemProps {
 }
 
 const CartItem: React.FC<CartItemProps> = ({ item }) => {
-  const { data } = useQuery<Item>(ALL_CARTS);
+  const { data } = useQuery<ItemList>(ALL_CARTS);
   const { removeFromCart } = useShoppingCart();
 
   if (!data) return <div>no data</div>;

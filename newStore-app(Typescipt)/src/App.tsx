@@ -1,16 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import About from "./pages/About";
 import Home from "./pages/Home";
 import Navbar from "./components/Navbar";
 import Store from "./pages/Store";
 import { Container } from "./components/Container";
-import { ShoppingCartProvider } from "./context/ShoppingCartContext";
+import { ShoppingCartProvider, useShoppingCart } from "./context/ShoppingCartContext";
 
 const App = () => {
+
   return (
     <>
-    <ShoppingCartProvider>
       <Navbar />
       <Container>
         <Routes>
@@ -19,7 +19,6 @@ const App = () => {
           <Route path="/" element={<About />} />
         </Routes>
       </Container>
-    </ShoppingCartProvider>
     </>
   );
 };

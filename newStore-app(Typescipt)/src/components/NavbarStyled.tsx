@@ -74,8 +74,7 @@ export const SignUpButton = styled.button`
   font-size: 20px;
   cursor: pointer;    
   transition: 0.25s ease;
-    &:hover,
-&:focus {
+    &:hover {
   box-shadow: 0 0.2rem 0.2rem -0.2rem var(--hover);
   transform: translateY(-0.12rem);
 }
