@@ -3,9 +3,11 @@ import { useShoppingCart } from "../context/ShoppingCartContext";
 import { Item } from "../types/cartItem";
 import * as s from "./StoreItemStyled";
 
+interface StoreItemProps {
+  item : Item
+}
 
-
-const StoreItem = ({item}: { item : {id: string, name: string, price: number, imgUrl: {url: string}}}) => {
+const StoreItem: React.FC<StoreItemProps> = ({item}) => {
   const {
     getItemQuantity,
     increaseCartQuantity,

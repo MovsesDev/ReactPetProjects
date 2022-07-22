@@ -24,14 +24,13 @@ const Navbar = () => {
   const [location, setLocation] = useState<boolean>(false);
   const navigate = useNavigate();
 
-  
   useEffect(() => {
-    if(localStorage.getItem('user') !== null) {
-      setIsAuth(true)
+    if (localStorage.getItem("user") !== null) {
+      setIsAuth(true);
     } else {
-      setIsAuth(false)
+      setIsAuth(false);
     }
-  }, [navigate])
+  }, [navigate]);
 
   return (
     <NavbarS>
@@ -43,10 +42,7 @@ const Navbar = () => {
             <NavItem to="/about">About</NavItem>
           </Nav>
           <div style={{ display: "flex" }}>
-            <IconWrap
-              onClick={() => setBasketOpen(true)}
-              cartQuantity={cartQuantity}
-            >
+            <IconWrap onClick={() => setBasketOpen(true)}>
               <Icon
                 xmlns="http://www.w3.org/2000/svg"
                 version="1.1"
@@ -78,13 +74,14 @@ const Navbar = () => {
                   </g>
                 </g>
               </Icon>
-              <Circle>{cartQuantity}</Circle>
+
+              <Circle cartQuantity={cartQuantity}>{cartQuantity}</Circle>
             </IconWrap>
             <div style={{ marginLeft: "30px" }}>
               {isAuth ? (
                 <SignUpButton
                   onClick={() => {
-                    localStorage.removeItem('user');
+                    localStorage.removeItem("user");
                     navigate("/sign");
                   }}
                 >
@@ -100,7 +97,7 @@ const Navbar = () => {
                   >
                     Log in
                   </LoginButton>
-                  <SignUpButton onClick={() => setIsOpen(true)}>
+                  <SignUpButton onClick={() => {setIsOpen(true); setLocation(false);}}>
                     Sign up
                   </SignUpButton>
                 </>

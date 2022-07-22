@@ -1,3 +1,4 @@
+import { useMutation } from "@apollo/client";
 import {
   createContext,
   Dispatch,
@@ -7,6 +8,7 @@ import {
   useEffect,
   useState,
 } from "react";
+import { PUBLISH_UPDATE_AUTHOR, UPDATE_AUTHOR } from "../apollo/requests";
 import Basket from "../components/Basket";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 
@@ -38,6 +40,12 @@ export function useShoppingCart() {
 }
 
 export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
+  const [ids, setIds] = useState<String[]>([]);
+  const [updateAuthor, { error, loading, data }] = useMutation(UPDATE_AUTHOR);
+  const [
+    publishUpdateAuthor,
+    { error: publishError, loading: publishLoading, data: publishData },
+  ] = useMutation(PUBLISH_UPDATE_AUTHOR);
   const [isAuth, setIsAuth] = useState<boolean>(false);
   const [cartItems, setCartItems] = useLocalStorage<CartItem[]>(
     "shopping-cart",
@@ -49,21 +57,37 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
     0
   );
 
-
   useEffect(() => {
-    if(localStorage.getItem('user') !== null) {
-      setIsAuth(true)
-    } else {
-      setIsAuth(false)
+    if (data) {
+      publishUpdateAuthor({
+        variables: {
+          email: localStorage.getItem("user"),
+        },
+      });
     }
-  }, [localStorage])
- 
+  }, [data]);
 
   function getItemQuantity(id: string) {
     return cartItems.find((item) => item.id === id)?.quantity || 0;
   }
 
+  function onlyUnique(value: any, index: any, self: string | any[]) {
+    return self.indexOf(value) === index;
+  }
+
   function increaseCartQuantity(id: string) {
+    setIds((prev) => {
+      const postIds = [...prev, id];
+      updateAuthor({
+        variables: {
+          email: localStorage.getItem("user"),
+          itemIds: postIds.filter(onlyUnique),
+        },
+      });
+      console.log("HERE!!!", ids, postIds);
+      return postIds;
+    });
+
     setCartItems((currItems) => {
       if (currItems.find((item) => item.id === id) == null) {
         return [...currItems, { id, quantity: 1 }];
@@ -78,6 +102,7 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
       }
     });
   }
+
   function decreaseCartQuantity(id: string) {
     setCartItems((currItems) => {
       if (currItems.find((item) => item.id === id)?.quantity === 1) {
@@ -93,7 +118,19 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
       }
     });
   }
+
   function removeFromCart(id: string) {
+    setIds((prev) => {
+      updateAuthor({
+        variables: {
+          email: localStorage.getItem("user"),
+          itemIds: prev.filter((i) => i !== id),
+        },
+      });
+      console.log(prev);
+      
+      return prev;
+    });
     setCartItems((currItems) => {
       return currItems.filter((item) => item.id !== id);
     });

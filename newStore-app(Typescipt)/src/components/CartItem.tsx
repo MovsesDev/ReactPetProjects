@@ -1,7 +1,7 @@
 import { useQuery } from "@apollo/client";
 import React from "react";
 import { useShoppingCart } from "../context/ShoppingCartContext";
-import { ALL_CARTS } from "../apollo/carts";
+import { ALL_CARTS } from "../apollo/requests";
 import { ItemList } from "../types/cartItem";
 import * as s from "./CartItemStyled";
 interface CartItemProps {
@@ -17,7 +17,6 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
 
   if (!data) return <div>no data</div>;
 
-  console.log(data);
 
   const cart = data.stores.find((i) => i.id === item.id);
   if (cart == null) return null;

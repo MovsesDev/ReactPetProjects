@@ -9,7 +9,7 @@ import React, {
   useState,
 } from "react";
 import { useNavigate } from "react-router-dom";
-import { CREATE_AUTHOR, PUBLISH_AUTHOR } from "../apollo/carts";
+import { CREATE_AUTHOR, PUBLISH_AUTHOR } from "../apollo/requests";
 import { useShoppingCart } from "../context/ShoppingCartContext";
 import useOnClickOutside from "../hooks/outsikdeClick";
 import { Author } from "../types/cartItem";
@@ -53,12 +53,14 @@ const SignUp: React.FC<SignUpProps> = ({ setLocation, setIsOpen }) => {
     data.createAuthor.id = "";
   }
 
+  
+  
   useEffect(() => {
     if (data?.createAuthor.email) {
       navigate("/");
       setIsOpen(false);
       localStorage.setItem("user", data.createAuthor.email);
-      setIsAuth(true);
+      console.log(data);
     }
   }, [data?.createAuthor.email]);
 

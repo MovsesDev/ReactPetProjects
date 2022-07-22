@@ -4,7 +4,7 @@ import { useShoppingCart } from "../context/ShoppingCartContext";
 import CartItem from "./CartItem";
 import { useQuery } from "@apollo/client";
 import { ItemList } from "../types/cartItem";
-import { ALL_CARTS } from "../apollo/carts";
+import { ALL_CARTS, AUTHOR } from "../apollo/requests";
 
 interface BasketProps {
   active: Boolean;
@@ -14,6 +14,14 @@ interface BasketProps {
 const Basket: React.FC<BasketProps> = ({ active, setActive }) => {
   const { cartItems } = useShoppingCart();
   const { error, loading, data } = useQuery<ItemList>(ALL_CARTS);
+  const {
+    error: authorError,
+    loading: authorLoading,
+    data: authorData,
+  } = useQuery(AUTHOR,{variables: {
+    email: localStorage.getItem('user')
+  }});
+
   if (error) return <div>Error</div>;
   if (!data) return <div>no data</div>;
 
@@ -31,9 +39,9 @@ const Basket: React.FC<BasketProps> = ({ active, setActive }) => {
           }}
         >
           <h1 style={{ padding: "20px", fontSize: "34px" }}>Cart</h1>
-          {cartItems.map((item) => (
-            <CartItem key={item.id} item={item} />
-          ))}
+          {cartItems.map((item) => {
+            return authorData?.authors[0].items.includes(item.id) && <CartItem key={item.id} item={item} />;
+          })}
           <p
             style={{
               display: "flex",

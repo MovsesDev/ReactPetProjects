@@ -23,8 +23,8 @@ export const NavItem = styled(NavLink)`
   padding: 0 10px;
 `;
 
-export const IconWrap = styled.div<{cartQuantity: Number}>`
-display: ${props => props.cartQuantity ? 'flex' : 'none'};
+export const IconWrap = styled.div`
+display: flex;
 align-items: center;
 justify-content: center;
 position: relative;
@@ -36,8 +36,8 @@ export const Icon = styled.svg`
 height: 100%;
 `;
 
-export const Circle = styled.div`
-display: flex;
+export const Circle = styled.div<{cartQuantity: Number}>`
+display: ${props => props.cartQuantity ? 'flex' : 'none'};
 justify-content: center;
 align-items: center;
 width: 18px;

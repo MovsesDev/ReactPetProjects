@@ -2,25 +2,22 @@ import { useQuery } from "@apollo/client";
 import React from "react";
 import { Container } from "../components/Container";
 import StoreItem from "../components/StoreItem";
-import { ALL_CARTS } from "../apollo/carts";
+import { ALL_CARTS } from "../apollo/requests";
 import { ItemList } from "../types/cartItem";
-import * as s from './StoreStyled'
+import * as s from "./StoreStyled";
 const Store = () => {
-  const  {loading, error, data} = useQuery<ItemList>(ALL_CARTS)  
+  const { loading, error, data } = useQuery<ItemList>(ALL_CARTS);
 
-  if(error) return <div>Something went wrong</div>
-if(loading) return <div>Loading...</div>
-
-
+  if (error) return <div>Something went wrong</div>;
+  if (loading) return <div>Loading...</div>;
 
   return (
     <s.Main>
-      {
-    data?.stores.map((item) => {
-      return <StoreItem key={item.id} item={item} />
-    }
-      
-      )}
+      {data?.stores.map((item) => {
+        console.log(item.id);
+        
+        return <StoreItem key={item.id} item={item} />;
+      })}
     </s.Main>
   );
 };
