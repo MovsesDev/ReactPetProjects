@@ -19,7 +19,8 @@ import {
 } from "./NavbarStyled";
 import SignUp from "./SignUp";
 const Navbar = () => {
-  const { cartQuantity, setBasketOpen, isAuth, setIsAuth } = useShoppingCart();
+  const cartQuantity = 1
+  const { setBasketOpen, isAuth, setIsAuth } = useShoppingCart();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [location, setLocation] = useState<boolean>(false);
   const navigate = useNavigate();

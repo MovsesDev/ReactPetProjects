@@ -12,8 +12,8 @@ interface BasketProps {
 }
 
 const Basket: React.FC<BasketProps> = ({ active, setActive }) => {
-  const { cartItems } = useShoppingCart();
   const { error, loading, data } = useQuery<ItemList>(ALL_CARTS);
+  const cartItems = data?.stores
   const {
     error: authorError,
     loading: authorLoading,
@@ -39,22 +39,9 @@ const Basket: React.FC<BasketProps> = ({ active, setActive }) => {
           }}
         >
           <h1 style={{ padding: "20px", fontSize: "34px" }}>Cart</h1>
-          {cartItems.map((item) => {
+          {cartItems?.map((item) => {  
             return authorData?.authors[0].items.includes(item.id) && <CartItem key={item.id} item={item} />;
           })}
-          <p
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "flex-end",
-            }}
-          >
-            Total : $
-            {cartItems.reduce((total, cartItem) => {
-              const item = data.stores.find((i) => i.id === cartItem.id);
-              return total + (item?.price || 0) * cartItem.quantity;
-            }, 0)}
-          </p>
           <s.CloseBtn onClick={() => setActive(false)} active={active}>
             X
           </s.CloseBtn>

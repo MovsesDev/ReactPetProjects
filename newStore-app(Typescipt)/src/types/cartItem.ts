@@ -17,3 +17,9 @@ export type Author = {
     email: string;
   }
 };
+
+export type Author2 = {
+  authores: {
+    items: String[] | null
+  }[]
+}

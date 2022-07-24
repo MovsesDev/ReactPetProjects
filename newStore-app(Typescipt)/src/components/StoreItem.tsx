@@ -9,12 +9,12 @@ interface StoreItemProps {
 
 const StoreItem: React.FC<StoreItemProps> = ({item}) => {
   const {
-    getItemQuantity,
+    // getItemQuantity,
     increaseCartQuantity,
     decreaseCartQuantity,
     removeFromCart,
   } = useShoppingCart();
-  const quantity = getItemQuantity(item.id);
+  const quantity = Math.ceil(Math.random() * 1)
   return (
     <s.Card>
       <s.Image src={item.imgUrl.url} />

@@ -60,7 +60,6 @@ const SignUp: React.FC<SignUpProps> = ({ setLocation, setIsOpen }) => {
       navigate("/");
       setIsOpen(false);
       localStorage.setItem("user", data.createAuthor.email);
-      console.log(data);
     }
   }, [data?.createAuthor.email]);
 

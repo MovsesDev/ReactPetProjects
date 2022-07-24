@@ -1,4 +1,4 @@
-import { useMutation } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import {
   createContext,
   Dispatch,
@@ -8,9 +8,15 @@ import {
   useEffect,
   useState,
 } from "react";
-import { PUBLISH_UPDATE_AUTHOR, UPDATE_AUTHOR } from "../apollo/requests";
+import {
+  ALL_CARTS,
+  AUTHOR,
+  PUBLISH_UPDATE_AUTHOR,
+  UPDATE_AUTHOR,
+} from "../apollo/requests";
 import Basket from "../components/Basket";
 import { useLocalStorage } from "../hooks/useLocalStorage";
+import { Author2, ItemList } from "../types/cartItem";
 
 type ShoppingCartProviderProps = {
   children: ReactNode;
@@ -22,13 +28,10 @@ type CartItem = {
 };
 
 type ShoppingCartContext = {
-  getItemQuantity: (id: string) => number;
   increaseCartQuantity: (id: string) => void;
   decreaseCartQuantity: (id: string) => void;
   removeFromCart: (id: string) => void;
-  cartQuantity: number;
   setBasketOpen: Dispatch<SetStateAction<boolean>>;
-  cartItems: CartItem[];
   isAuth: boolean;
   setIsAuth: Dispatch<SetStateAction<boolean>>;
 };
@@ -40,112 +43,85 @@ export function useShoppingCart() {
 }
 
 export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
-  const [ids, setIds] = useState<String[]>([]);
+  const [isAuth, setIsAuth] = useState<boolean>(false);
+  const [isBasketOpen, setBasketOpen] = useState<boolean>(false);
+
   const [updateAuthor, { error, loading, data }] = useMutation(UPDATE_AUTHOR);
   const [
     publishUpdateAuthor,
     { error: publishError, loading: publishLoading, data: publishData },
   ] = useMutation(PUBLISH_UPDATE_AUTHOR);
-  const [isAuth, setIsAuth] = useState<boolean>(false);
-  const [cartItems, setCartItems] = useLocalStorage<CartItem[]>(
-    "shopping-cart",
-    []
-  );
-  const [isBasketOpen, setBasketOpen] = useState<boolean>(false);
-  const cartQuantity = cartItems.reduce(
-    (quantity, item) => item.quantity + quantity,
-    0
-  );
+  const {
+    error: authorError,
+    loading: authorLoading,
+    data: authorData,
+  } = useQuery(AUTHOR, {
+    variables: {
+      email: localStorage.getItem("user"),
+    },
+  });
 
   useEffect(() => {
     if (data) {
       publishUpdateAuthor({
         variables: {
           email: localStorage.getItem("user"),
-        },
+        }, update: (store, {data}) => {
+          const {authors} = store.readQuery<any>({query: AUTHOR})
+          store.writeQuery({query: AUTHOR, data: {
+            authors: [...authors, data.publishUpdateAuthor]
+          }})
+        }
       });
+      console.log("useffect");
     }
   }, [data]);
+    
 
-  function getItemQuantity(id: string) {
-    return cartItems.find((item) => item.id === id)?.quantity || 0;
-  }
-
-  function onlyUnique(value: any, index: any, self: string | any[]) {
-    return self.indexOf(value) === index;
-  }
+  const onlyUnique = (item: any, index: any, self: string | any[]) => {
+    return self.indexOf(item) === index;
+  };
 
   function increaseCartQuantity(id: string) {
-    setIds((prev) => {
-      const postIds = [...prev, id];
-      updateAuthor({
-        variables: {
-          email: localStorage.getItem("user"),
-          itemIds: postIds.filter(onlyUnique),
-        },
-      });
-      console.log("HERE!!!", ids, postIds);
-      return postIds;
+    const postIds = authorData.authors[0].items;
+    updateAuthor({
+      variables: {
+        email: localStorage.getItem("user"),
+        itemIds: [...postIds, id].filter(onlyUnique),
+      },
     });
-
-    setCartItems((currItems) => {
-      if (currItems.find((item) => item.id === id) == null) {
-        return [...currItems, { id, quantity: 1 }];
-      } else {
-        return currItems.map((item) => {
-          if (item.id === id) {
-            return { ...item, quantity: item.quantity + 1 };
-          } else {
-            return item;
-          }
-        });
-      }
-    });
+    return postIds;
   }
 
   function decreaseCartQuantity(id: string) {
-    setCartItems((currItems) => {
-      if (currItems.find((item) => item.id === id)?.quantity === 1) {
-        return currItems.filter((item) => item.id !== id);
-      } else {
-        return currItems.map((item) => {
-          if (item.id === id) {
-            return { ...item, quantity: item.quantity - 1 };
-          } else {
-            return item;
-          }
-        });
-      }
+    const postIds = authorData.authors[0].items.filter((i: string) => i !== id);
+    updateAuthor({
+      variables: {
+        email: localStorage.getItem("user"),
+        itemIds: postIds,
+      },
     });
+    return postIds;
   }
 
   function removeFromCart(id: string) {
-    setIds((prev) => {
-      updateAuthor({
-        variables: {
-          email: localStorage.getItem("user"),
-          itemIds: prev.filter((i) => i !== id),
-        },
-      });
-      console.log(prev);
-      
-      return prev;
+    const postIds = authorData.authors[0].items.filter((i: string) => i !== id);
+    updateAuthor({
+      variables: {
+        email: localStorage.getItem("user"),
+        itemIds: postIds,
+      },
     });
-    setCartItems((currItems) => {
-      return currItems.filter((item) => item.id !== id);
-    });
+    return postIds;
   }
 
   return (
     <ShoppingCartContext.Provider
       value={{
-        getItemQuantity,
         increaseCartQuantity,
         decreaseCartQuantity,
         removeFromCart,
-        cartQuantity,
         setBasketOpen,
-        cartItems,
         isAuth,
         setIsAuth,
       }}
