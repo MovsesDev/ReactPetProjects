@@ -40,7 +40,7 @@ const Basket: React.FC<BasketProps> = ({ active, setActive }) => {
         >
           <h1 style={{ padding: "20px", fontSize: "34px" }}>Cart</h1>
           {cartItems?.map((item) => {  
-            return authorData?.authors[0].items.includes(item.id) && <CartItem key={item.id} item={item} />;
+            return authorData?.authors[0].itemInfo.filter((e : {itemId: string}) => e.itemId === item.id) && <CartItem key={item.id} item={item} />;
           })}
           <s.CloseBtn onClick={() => setActive(false)} active={active}>
             X

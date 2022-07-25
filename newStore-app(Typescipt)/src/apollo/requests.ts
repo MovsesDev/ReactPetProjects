@@ -16,13 +16,14 @@ export const ALL_CARTS = gql`
 export const AUTHOR = gql`
   query ($email: String!) {
     authors(where: { email: $email }) {
-      items
+      items,
+      itemInfo
     }
   }
 `;
 export const UPDATE_AUTHOR = gql`
-  mutation ($email: String!, $itemIds: [String!]) {
-    updateAuthor(where: { email: $email }, data: { items: $itemIds }) {
+  mutation ($email: String!, $items: Json!) {
+    updateAuthor(where: { email: $email }, data: { itemInfo: $items }) {
       email
       items
     }

@@ -4,7 +4,17 @@ import { Item } from "../types/cartItem";
 import * as s from "./StoreItemStyled";
 
 interface StoreItemProps {
-  item : Item
+  item: Item
+  // authorItem : {
+  //   itemInfo : [
+  //     {
+  //       itemId : string,
+  //       quantity: number
+
+  //     }[]
+  //   ],
+  //   items: string[]
+  // }
 }
 
 const StoreItem: React.FC<StoreItemProps> = ({item}) => {
