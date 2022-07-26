@@ -1,11 +1,13 @@
+import { useQuery } from "@apollo/client";
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useShoppingCart } from "../context/ShoppingCartContext";
-import useOnClickOutside from "../hooks/outsikdeClick";
-import Basket from "./Basket";
-import { Container } from "./Container";
-import Login from "./Login";
-import Modal from "./Modal";
+import { AUTHOR } from "../../apollo/requests";
+import { useShoppingCart } from "../../context/ShoppingCartContext";
+import useOnClickOutside from "../../hooks/outsikdeClick";
+import Basket from "../Basket/Basket";
+import { Container } from "../common/Container";
+import Login from "../Login/Login";
+import Modal from "../common/Modal";
 import {
   Circle,
   Icon,
@@ -17,12 +19,28 @@ import {
   NavItem,
   SignUpButton,
 } from "./NavbarStyled";
-import SignUp from "./SignUp";
+import SignUp from "../SignUp/SignUp";
+import Logout from "../Logout";
 const Navbar = () => {
-  const cartQuantity = 1
+  const { data } = useQuery(AUTHOR, {
+    variables: {
+      email: localStorage.getItem("user"),
+    },
+    skip: localStorage.getItem("user") === null,
+  });
+  const quantity = data?.authors[0].itemInfo?.map(
+    (i: { quantity: number }) => i.quantity
+  );
+
+  let cartQuantity = quantity?.reduce(
+    (previousValue: number, currentValue: number) =>
+      previousValue + currentValue,
+    0
+  );
   const { setBasketOpen, isAuth, setIsAuth } = useShoppingCart();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [location, setLocation] = useState<boolean>(false);
+  const [logout, setLogout] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -58,7 +76,7 @@ const Navbar = () => {
                     <path
                       d="M 72.975 58.994 H 31.855 c -1.539 0 -2.897 -1.005 -3.347 -2.477 L 15.199 13.006 H 3.5 c -1.933 0 -3.5 -1.567 -3.5 -3.5 s 1.567 -3.5 3.5 -3.5 h 14.289 c 1.539 0 2.897 1.005 3.347 2.476 l 13.309 43.512 h 36.204 l 10.585 -25.191 H 45 c -1.933 0 -3.5 -1.567 -3.5 -3.5 s 1.567 -3.5 3.5 -3.5 h 41.5 c 1.172 0 2.267 0.587 2.915 1.563 s 0.766 2.212 0.312 3.293 L 76.201 56.85 C 75.655 58.149 74.384 58.994 72.975 58.994 z"
                       transform=" matrix(1 0 0 1 0 0) "
-                      stroke-linecap="round"
+                      strokeLinecap="round"
                     />
                     <circle
                       cx="28.88"
@@ -82,8 +100,7 @@ const Navbar = () => {
               {isAuth ? (
                 <SignUpButton
                   onClick={() => {
-                    localStorage.removeItem("user");
-                    navigate("/sign");
+                    setLogout(true);
                   }}
                 >
                   Log out
@@ -98,7 +115,12 @@ const Navbar = () => {
                   >
                     Log in
                   </LoginButton>
-                  <SignUpButton onClick={() => {setIsOpen(true); setLocation(false);}}>
+                  <SignUpButton
+                    onClick={() => {
+                      setIsOpen(true);
+                      setLocation(false);
+                    }}
+                  >
                     Sign up
                   </SignUpButton>
                 </>
@@ -114,6 +136,7 @@ const Navbar = () => {
           <SignUp setLocation={setLocation} setIsOpen={setIsOpen} />
         )}{" "}
       </Modal>
+      <Logout logout={logout} setLogout={setLogout}/>
     </NavbarS>
   );
 };

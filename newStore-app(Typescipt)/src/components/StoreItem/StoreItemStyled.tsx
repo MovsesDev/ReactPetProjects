@@ -4,6 +4,8 @@ export const Card = styled.div`
   box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
   width: 26%;
   padding: 0 0 1rem 0;
+  position: relative;
+  z-index: 1;
   @media (max-width: 1050px) {
     width: 45%;
   }

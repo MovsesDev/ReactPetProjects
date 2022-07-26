@@ -1,10 +1,10 @@
 import React, { SetStateAction } from "react";
 import * as s from "./BasketStyled";
-import { useShoppingCart } from "../context/ShoppingCartContext";
-import CartItem from "./CartItem";
+import { useShoppingCart } from "../../context/ShoppingCartContext";
+import CartItem from "../CartItem/CartItem";
 import { useQuery } from "@apollo/client";
-import { ItemList } from "../types/cartItem";
-import { ALL_CARTS, AUTHOR } from "../apollo/requests";
+import { ItemList } from "../../types/cartItem";
+import { ALL_CARTS, AUTHOR } from "../../apollo/requests";
 
 interface BasketProps {
   active: Boolean;
@@ -13,14 +13,14 @@ interface BasketProps {
 
 const Basket: React.FC<BasketProps> = ({ active, setActive }) => {
   const { error, loading, data } = useQuery<ItemList>(ALL_CARTS);
-  const cartItems = data?.stores
   const {
     error: authorError,
     loading: authorLoading,
     data: authorData,
   } = useQuery(AUTHOR,{variables: {
-    email: localStorage.getItem('user')
-  }});
+    email: localStorage.getItem('user') 
+  },skip: localStorage.getItem('user') === null});
+  const cartItems = authorData?.authors[0].itemInfo?.map((i: { itemId: string; }) => i.itemId)
 
   if (error) return <div>Error</div>;
   if (!data) return <div>no data</div>;
@@ -39,9 +39,10 @@ const Basket: React.FC<BasketProps> = ({ active, setActive }) => {
           }}
         >
           <h1 style={{ padding: "20px", fontSize: "34px" }}>Cart</h1>
-          {cartItems?.map((item) => {  
-            return authorData?.authors[0].itemInfo.filter((e : {itemId: string}) => e.itemId === item.id) && <CartItem key={item.id} item={item} />;
+          {cartItems?.map((item: string) => {  
+            return <CartItem key={item} item={item} />;
           })}
+          {/* <p>Total : {authorData?.authors[0].itemInfo?.map(i => i.)}</p> */}
           <s.CloseBtn onClick={() => setActive(false)} active={active}>
             X
           </s.CloseBtn>

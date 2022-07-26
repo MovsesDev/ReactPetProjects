@@ -9,10 +9,10 @@ import React, {
   useState,
 } from "react";
 import { useNavigate } from "react-router-dom";
-import { CREATE_AUTHOR, PUBLISH_AUTHOR } from "../apollo/requests";
-import { useShoppingCart } from "../context/ShoppingCartContext";
-import useOnClickOutside from "../hooks/outsikdeClick";
-import { Author } from "../types/cartItem";
+import { CREATE_AUTHOR, PUBLISH_AUTHOR } from "../../apollo/requests";
+import { useShoppingCart } from "../../context/ShoppingCartContext";
+import useOnClickOutside from "../../hooks/outsikdeClick";
+import { Author } from "../../types/cartItem";
 import { Form, Input, LoginBtn } from "./SignUpStyled";
 
 interface SignUpProps {

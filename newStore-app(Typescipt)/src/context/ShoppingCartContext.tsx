@@ -14,17 +14,12 @@ import {
   PUBLISH_UPDATE_AUTHOR,
   UPDATE_AUTHOR,
 } from "../apollo/requests";
-import Basket from "../components/Basket";
+import Basket from "../components/Basket/Basket";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import { Author2, ItemList } from "../types/cartItem";
 
 type ShoppingCartProviderProps = {
   children: ReactNode;
-};
-
-type CartItem = {
-  id: string;
-  quantity: number;
 };
 
 type ShoppingCartContext = {
@@ -46,11 +41,19 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
   const [isAuth, setIsAuth] = useState<boolean>(false);
   const [isBasketOpen, setBasketOpen] = useState<boolean>(false);
 
+  const { refetch } = useQuery(AUTHOR, {
+    variables: {
+      email: localStorage.getItem("user"),
+    },
+    skip: localStorage.getItem("user") === null,
+  });
+
   const [updateAuthor, { error, loading, data }] = useMutation(UPDATE_AUTHOR);
   const [
     publishUpdateAuthor,
     { error: publishError, loading: publishLoading, data: publishData },
   ] = useMutation(PUBLISH_UPDATE_AUTHOR);
+
   const {
     error: authorError,
     loading: authorLoading,
@@ -61,37 +64,31 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
     },
   });
 
+  const loadingAll = authorLoading || publishLoading || loading;
+
   useEffect(() => {
     if (data) {
-      publishUpdateAuthor({
-        variables: {
-          email: localStorage.getItem("user"),
-        },
-      });
-      console.log("useffect");
+      (async () => {
+        await publishUpdateAuthor({
+          variables: {
+            email: localStorage.getItem("user"),
+          },
+        });
+        refetch();
+      })();
     }
   }, [data]);
-
-  const onlyUnique = (item: any, index: any, self: string | any[]) => {
-    return self.indexOf(item) === index;
-  };
 
   function increaseCartQuantity(id: string) {
     let postIds = authorData.authors[0].itemInfo;
     const item = postIds?.find((i: { itemId: string }) => i.itemId === id);
 
-    // console.log(postIds.find((i: { itemId: string; }) => i.itemId === id));
-
     const addItem = () => {
       if (postIds === null) {
-        console.log("1");
-        // let quantity = postIds.find((i: { itemId: string; }) => i.itemId === id).quantity;
         postIds = [{ itemId: id, quantity: 1 }];
 
         return postIds;
       } else {
-        console.log(postIds);
-
         if (item) {
           console.log("2");
           const pos = postIds
@@ -100,7 +97,7 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
           const postIdsCopy = [...postIds];
           postIdsCopy[pos] = { itemId: id, quantity: item.quantity + 1 };
           console.log(postIdsCopy);
-          
+
           return postIdsCopy;
         } else {
           console.log("3");
@@ -120,25 +117,48 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
   }
 
   function decreaseCartQuantity(id: string) {
-    const postIds = authorData.authors[0].items.filter((i: string) => i !== id);
+    let postIds = authorData.authors[0].itemInfo;
+    const item = postIds?.find((i: { itemId: string }) => i.itemId === id);
+    const decreaseItem = () => {
+      if (item && item.quantity >= 1) {
+        console.log("2");
+        const pos = postIds
+          .map((i: { itemId: string }) => i.itemId)
+          .indexOf(id);
+        const postIdsCopy = [...postIds];
+        postIdsCopy[pos] = { itemId: id, quantity: item.quantity - 1 };
+        console.log(postIdsCopy);
+
+        return postIdsCopy;
+      } else if (item && item.quantity === 0) {
+        const pos = postIds
+          .map((i: { itemId: string }) => i.itemId)
+          .indexOf(id);
+        const postIdsCopy = [...postIds];
+        postIdsCopy[pos] = { itemId: id, quantity: 0 };
+
+        return postIdsCopy;
+      }
+    };
+
     updateAuthor({
       variables: {
         email: localStorage.getItem("user"),
-        itemIds: postIds,
+        items: decreaseItem(),
       },
     });
-    return postIds;
   }
 
   function removeFromCart(id: string) {
-    const postIds = authorData.authors[0].items.filter((i: string) => i !== id);
+    let postIds = authorData?.authors[0].itemInfo;
+    let items = postIds.filter((i: { itemId: string }) => i.itemId !== id);
+
     updateAuthor({
       variables: {
         email: localStorage.getItem("user"),
-        itemIds: postIds,
+        items: items,
       },
     });
-    return postIds;
   }
 
   return (

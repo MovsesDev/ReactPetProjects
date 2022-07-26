@@ -2,8 +2,8 @@ import { useQuery } from "@apollo/client";
 import React, { Dispatch, RefObject, SetStateAction, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { LOGIN_AUTHOR } from "../apollo/requests";
-import useOnClickOutside from "../hooks/outsikdeClick";
+import { LOGIN_AUTHOR } from "../../apollo/requests";
+import useOnClickOutside from "../../hooks/outsikdeClick";
 import { Form, Input, LoginBtn } from "./LoginStyled";
 interface SignUpProps {
   setLocation: Dispatch<SetStateAction<boolean>>;

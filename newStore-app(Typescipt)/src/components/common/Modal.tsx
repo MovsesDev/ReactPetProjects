@@ -12,6 +12,7 @@ export const ModalS = styled.div<{isOpen: boolean}>`
   justify-content: center;
   align-items: center;
   transition: transform .7s ease;
+  z-index: 1000;
 `;
 
 const CloseBtn = styled.button`
@@ -22,6 +23,7 @@ const CloseBtn = styled.button`
     position: absolute;
     top: 0;
     right: 0;
+z-index: 1000;
     transform: translate(-45%, 25%);
     cursor: pointer;
 `

@@ -23,7 +23,7 @@ export const AUTHOR = gql`
 `;
 export const UPDATE_AUTHOR = gql`
   mutation ($email: String!, $items: Json!) {
-    updateAuthor(where: { email: $email }, data: { itemInfo: $items }) {
+    updateAuthor(where: { email: $email}, data: { itemInfo: $items }) {
       email
       items
     }
